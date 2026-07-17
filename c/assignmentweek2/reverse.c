@@ -18,7 +18,6 @@ void reverse_string(char *str) {
 
 int main() {
     char str[100];
-    printf("Enter a string: ");
     fgets(str, sizeof(str), stdin);
     int i = 0;
     while (str[i] != '\0') {
@@ -29,6 +28,6 @@ int main() {
         i++;
     }
     reverse_string(str);
-    printf("Reversed string: %s\n", str);
+    printf("%s\n", str);
     return 0;
 }

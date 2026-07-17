@@ -26,11 +26,10 @@ void url_encode(char *str, int true_length) {
 int main() {
     char str[100];
     int true_length;
-    printf("Enter the string: ");
     fgets(str, sizeof(str), stdin);
-    printf("Enter the true length: ");
+    printf("true length: ");
     scanf("%d", &true_length);
     url_encode(str, true_length);
-    printf("Encoded String: %s\n", str);
+    printf(" %s\n", str);
     return 0;
 }

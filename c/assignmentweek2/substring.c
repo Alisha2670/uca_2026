@@ -20,10 +20,10 @@ int main() {
     char haystack[100];
     char needle[100];
 
-    printf("Enter the main string (haystack): ");
+    printf("haystack: ");
     fgets(haystack, sizeof(haystack), stdin);
 
-    printf("Enter the substring (needle): ");
+    printf("needle: ");
     fgets(needle, sizeof(needle), stdin);
     int i = 0;
     while (haystack[i] != '\0') {
@@ -43,11 +43,7 @@ int main() {
     }
 
     int index = find_substring(haystack, needle);
-
-    if (index != -1)
-        printf("Substring found at index %d\n", index);
-    else
-        printf("Substring not found\n");
+    printf("%d\n", index);
 
     return 0;
 }
