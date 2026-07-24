@@ -7,7 +7,7 @@ int merge(int arr[],int low, int mid, int high){
     int count=0;
     int j=mid+1;
     for(int i=low;i<=mid;i++){
-        while(j<=high && arr[i]> 2*arr[j]){
+        while(j<=high && (long long)arr[i]> 2LL*arr[j]){
             j++;
         }
         count+= j-(mid+1);
