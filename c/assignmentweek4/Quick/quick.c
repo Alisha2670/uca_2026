@@ -2,90 +2,95 @@
 #include <stdlib.h>
 #include <time.h>
 
-void swap(int *a, int *b)
-{
+void swap(int *a, int *b) {
     int temp = *a;
     *a = *b;
+    *b = *b;
     *b = temp;
 }
 
-void generateRandomArray(int arr[], int n)
-{
-    for (int i = 0; i < n; i++)
-    {
-        arr[i] = rand() % 10000;
-    }
-}
+int partition(int *arr, int left, int right, int pivot_index) {
+    int pivot_value = arr[pivot_index];
 
+    swap(&arr[pivot_index], &arr[right]);
+    int store_index = left;
 
-int partition(int arr[], int low, int high)
-{
-    int pivot = arr[high];
-    int i = low;
-    for (int j = low; j < high; j++)
-    {
-        if (arr[j] <= pivot)
-        {
-            swap(&arr[i], &arr[j]);
-            i++;
+    for (int i = left; i < right; i++) {
+        if (arr[i] < pivot_value) {
+            swap(&arr[store_index], &arr[i]);
+            store_index++;
         }
     }
-    swap(&arr[i], &arr[high]);
-    return i;
+
+    swap(&arr[store_index], &arr[right]);
+    return store_index;
 }
 
+void quickselect(int *arr, int left, int right, int k) {
+    if (left >= right)
+        return;
 
-void quickSelect(int arr[], int low, int high, int k)
-{
-    if (low < high)
-    {
-        int pivotIndex = partition(arr, low, high);
-        if (pivotIndex == k)
-            return;
-        else if (pivotIndex > k)
-            quickSelect(arr, low, pivotIndex - 1, k);
-        else
-            quickSelect(arr, pivotIndex + 1, high, k);
-    }
+    int pivot_index = left + rand() % (right - left + 1);
+    pivot_index = partition(arr, left, right, pivot_index);
+
+    if (k == pivot_index)
+        return;
+    else if (k < pivot_index)
+        quickselect(arr, left, pivot_index - 1, k);
+    else
+        quickselect(arr, pivot_index + 1, right, k);
 }
 
-
-void printKSmallest(int arr[], int k)
-{
-    printf("\nSmallest %d elements (any order):\n", k);
-    for (int i = 0; i < k; i++){
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-}
-
-int main()
-{
-    srand(time(NULL));
-    int n, k;
-    printf("Enter array size: ");
-    scanf("%d", &n);
-    int *arr = (int *)malloc(n * sizeof(int));
-    if (arr == NULL)
-    {
-        printf("Memory allocation failed.\n");
-        return 0;
-    }
-    generateRandomArray(arr, n);
-    printf("Enter value of K: ");
-    scanf("%d", &k);
+void get_smallest_k(int *arr, int n, int k) {
     if (k <= 0 || k > n)
-    {
-        printf("Invalid value of K.\n");
-        free(arr);
-        return 0;
+        return;
+
+    quickselect(arr, 0, n - 1, k - 1);
+}
+
+void benchmark_quickselect() {
+    int sizes[] = {10000, 50000, 100000, 200000, 500000, 1000000, 2000000, 5000000};
+    int num_sizes = sizeof(sizes) / sizeof(sizes[0]);
+
+    printf("Dataset Size (n)\tTime (ms)\n");
+    printf("---------------------------------\n");
+
+    for (int i = 0; i < num_sizes; i++) {
+        int n = sizes[i];
+
+        int *dataset = (int *)malloc(n * sizeof(int));
+        if (dataset == NULL) {
+            printf("Memory allocation failed for size %d\n", n);
+            return;
+        }
+
+        // Generate random data
+        for (int j = 0; j < n; j++) {
+            dataset[j] = rand();
+        }
+
+        int k = n / 10;
+
+        clock_t start_time = clock();
+
+        get_smallest_k(dataset, n, k);
+
+        clock_t end_time = clock();
+
+        // Convert CPU time to milliseconds
+        double duration_ms =
+            ((double)(end_time - start_time) * 1000.0) / CLOCKS_PER_SEC;
+
+        printf("%-15d\t%.3f ms\n", n, duration_ms);
+
+        free(dataset);
     }
-    clock_t start = clock();
-    quickSelect(arr, 0, n - 1, k - 1);
-    clock_t end = clock();
-    double timeTaken = (double)(end - start) / CLOCKS_PER_SEC;
-    printKSmallest(arr, k);
-    printf("\nExecution Time = %.6f seconds\n", timeTaken);
-    free(arr);
+}
+
+int main() {
+    srand((unsigned)time(NULL));
+
+    benchmark_quickselect();
+
     return 0;
 }
