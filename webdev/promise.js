@@ -1,5 +1,5 @@
-// Online Javascript Editor for free
-// Write, Edit and Run your Javascript code using JS Online Compiler
+
+
 
 function NewPromise(executor) {
     this.state = "pending";
@@ -9,7 +9,7 @@ function NewPromise(executor) {
     this.onRejectedCallbacks = [];
 
     const resolve = (value) => {
-        if (this.state === "pending") {
+        if(this.state === "pending"){
             this.state = "fulfilled";
             this.value = value;
             this.onFulfilledCallbacks.forEach(fn => fn());
@@ -17,16 +17,16 @@ function NewPromise(executor) {
     };
 
     const reject = (reason) => {
-        if (this.state === "pending") {
+        if(this.state === "pending"){
             this.state = "rejected";
             this.reason = reason;
             this.onRejectedCallbacks.forEach(fn => fn());
         }
     };
 
-    try {
+    try{
         executor(resolve, reject);
-    } catch (err) {
+    }catch (err){
         reject(err);
     }
 }
@@ -37,35 +37,35 @@ NewPromise.prototype.then = function (onFulfilled, onRejected) {
 
     const promise2 = new NewPromise((resolve, reject) => {
 
-        if (this.state === "fulfilled") {
+        if(this.state === "fulfilled"){
             setTimeout(() => {
-                try {
+                try{
                     const x = onFulfilled(this.value);
                     resolvePromise(promise2, x, resolve, reject);
-                } catch (err) {
+                } catch (err){
                     reject(err);
                 }
             });
         }
 
-        if (this.state === "rejected") {
+        if(this.state === "rejected"){
             setTimeout(() => {
-                try {
+                try{
                     const x = onRejected(this.reason);
                     resolvePromise(promise2, x, resolve, reject);
-                } catch (err) {
+                } catch(err){
                     reject(err);
                 }
             });
         }
 
-        if (this.state === "pending") {
+        if(this.state === "pending"){
             this.onFulfilledCallbacks.push(() => {
                 setTimeout(() => {
-                    try {
+                    try{
                         const x = onFulfilled(this.value);
                         resolvePromise(promise2, x, resolve, reject);
-                    } catch (err) {
+                    } catch (err){
                         reject(err);
                     }
                 });
@@ -73,10 +73,10 @@ NewPromise.prototype.then = function (onFulfilled, onRejected) {
 
             this.onRejectedCallbacks.push(() => {
                 setTimeout(() => {
-                    try {
+                    try{
                         const x = onRejected(this.reason);
                         resolvePromise(promise2, x, resolve, reject);
-                    } catch (err) {
+                    } catch (err){
                         reject(err);
                     }
                 });
@@ -92,13 +92,13 @@ NewPromise.prototype.catch = function (onRejected) {
 };
 
 function resolvePromise(promise2, x, resolve, reject) {
-    if (promise2 === x) {
+    if(promise2 === x){
         return reject(new TypeError("Chaining cycle detected"));
     }
 
-    if (x instanceof NewPromise) {
+    if(x instanceof NewPromise){
         x.then(resolve, reject);
-    } else {
+    } else{
         resolve(x);
     }
 }
